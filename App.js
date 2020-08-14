@@ -1,21 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {View, Text, StyleSheet, FlatList } from 'react-native'
+import uuid  from 'uuid';
+import ListItem from './Components/ListItem'
+import Header from './Components/Header'
+import AddItem from './Components/AddItem'
 
-export default function App() {
+const App = () => {
+
+  const [items, setItems] = useState([
+    {id: uuid(), text: 'Milk'},
+    {id: uuid(), text: 'Eggs'},
+    {id: uuid(), text: 'Bread'},
+    {id: uuid(), text: 'Juice'}
+  ]);
+
+    const deleteItem = (id) => {
+      setItems(previousItems => {
+        return previousItems.filter(item => item.id != id);
+      });
+    }
+
+    const addItem = (text) => {
+      setItems(previousItems => {
+        return [{id: uuid(), text}, ...previousItems];
+      })
+    }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style = {styles.container}>
+      <Header title='Shopping List'/>
+      <AddItem addItem={addItem} />
+      <FlatList data={items} 
+      renderItem = {({item}) => (
+        <ListItem item = {item} deleteItem = {deleteItem} />
+      )}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    paddingTop: 35
+  }
+
 });
+
+export default App;
